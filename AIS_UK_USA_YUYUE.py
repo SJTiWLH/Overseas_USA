@@ -48,7 +48,8 @@ city_translations = {
     'Abu Dhabi':'阿布扎比',
     'Dubai':'迪拜',
     'La Paz':'阿巴斯',
-    'Paris':'巴黎'
+    'Paris':'巴黎',
+    'Bridgetown':'巴巴多斯'
 }
 month_translations = {
     'January': '1',
@@ -84,7 +85,8 @@ old_data = {
     'Abu Dhabi':'No Appointments Available',
     'Dubai':'No Appointments Available',
     'La Paz':'No Appointments Available',
-    'Paris':'No Appointments Available'
+    'Paris':'No Appointments Available',
+    'Bridgetown':'No Appointments Available'
 }
 city_need_data = {
     'Ottawa': '2023.11.24-2024.04.30',
@@ -109,7 +111,7 @@ city_need_data = {
     'Paris':'2023.11.24-2024.04.30'
 }
 # 正则表达式匹配文段中的城市
-pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris"
+pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown"
 # 正则表达式匹配文段中的月份
 pattern_months = r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\b"
 # 正则表达式匹配四位数字
@@ -313,7 +315,8 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
         '阿布扎比': 'Abu Dhabi',
         '迪拜': 'Dubai',
         '阿巴斯': 'La Paz',
-        '巴黎': 'Paris'
+        '巴黎': 'Paris',
+        '巴巴多斯':'Bridgetown'
     }
     xiugai = int(xiugai)
     Chinese_lingqu = lingqu
@@ -329,6 +332,9 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
         website = "https://ais.usvisa-info.com/en-cl/niv/users/sign_in"
     elif lingqu =="Dubai" or lingqu =="Abu Dhabi":
         website = "https://ais.usvisa-info.com/en-ae/niv/users/sign_in"
+    elif lingqu =="Bridgetown":
+        website = "https://ais.usvisa-info.com/en-bb/niv/users/sign_in"
+
 
     print(lingqu+"-"+username+"-"+password+"-"+date_range)
     print(website)
@@ -644,10 +650,15 @@ XiaoMai = "540727185@qq.com"
 Fanfan = "2194025327@qq.com"
 Mail_send2 = [Tong,XiaoMi,XiaoXin,Shen]
 
+# 添加新的城市与领区说明：
+# 1，old_data 中添加判断日期发生变化的初始化信息。
+# 2,city_translations 中添加将城市名翻译成中文的字典信息。
+# 3，pattern_city 中天花正则表达匹配城市。
+# 4，添加登陆的网址 website
 
 #---------------------------------------------------------------------------------------------
 # 设置单刷国家
-From_GuoJia = "英国"
+From_GuoJia = "巴巴多斯"
 ip = "39.98.220.155"
 #---------------------------------------------------------------------------------------------
 # 将Excel文件路径替换成你的文件路径
@@ -689,6 +700,8 @@ while True:
                     website = "https://ais.usvisa-info.com/en-bo/niv/users/sign_in"
                 elif From_GuoJia == "法国":
                     website = "https://ais.usvisa-info.com/en-fr/niv/users/sign_in"
+                elif From_GuoJia == "巴巴多斯":
+                    website = 'https://ais.usvisa-info.com/en-bb/niv/users/sign_in'
 
                 print(username_values[cishu])
                 print(password_values[cishu])

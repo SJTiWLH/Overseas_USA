@@ -38,7 +38,9 @@ city_translations = {
     'Abu Dhabi':'阿布扎比',
     'Dubai':'迪拜',
     'La Paz':'阿巴斯',
-    'Paris':'巴黎'
+    'Paris':'巴黎',
+    'Bridgetown':'布里奇顿'
+
 }
 month_translations = {
     'January': '1',
@@ -74,7 +76,8 @@ old_data = {
     'Abu Dhabi':'No Appointments Available',
     'Dubai':'No Appointments Available',
     'La Paz':'No Appointments Available',
-    'Paris':'No Appointments Available'
+    'Paris':'No Appointments Available',
+    'Bridgetown':'No Appointments Available'
 }
 city_need_data = {
     'Ottawa': '2023.11.24-2024.04.30',
@@ -98,8 +101,15 @@ city_need_data = {
     'La Paz':'2023.11.24-2024.04.30',
     'Paris':'2023.11.24-2024.04.30'
 }
+
+# 添加新的城市与领区说明：
+# 1，old_data中添加判断日期发生变化的初始化信息。
+# 2,city_translations中添加将城市名翻译成中文的字典信息。
+# 3，pattern_city中天花正则表达匹配城市。
+# 4，添加登陆的网址 website
+
 # 正则表达式匹配文段中的城市
-pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris"
+pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown"
 # 正则表达式匹配文段中的月份
 pattern_months = r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\b"
 # 正则表达式匹配四位数字
@@ -185,8 +195,9 @@ XiaoXin = "928781367@qq.com"
 XiaoMi = "1951645633@qq.com"
 XiaoMai = "540727185@qq.com"
 Fanfan = "2194025327@qq.com"
-Mail_send2 = [Tong,XiaoMi,Shen]
-ip = '39.98.58.227'
+Mail_send1 = [Tong,XiaoMi,Shen,XiaoXin] # Mail_send1发送范围内的日期。
+Mail_send2 = [Tong,XiaoMi,Shen] # Mail_send2发送发生变化的日期。
+ip = '39.98.88.235'
 task = "境外刷美签"
 nameid = 0
 
@@ -236,6 +247,9 @@ while True:
 
                 elif From_GuoJia == "法国":
                     website = "https://ais.usvisa-info.com/en-fr/niv/users/sign_in"
+
+                elif From_GuoJia == "巴巴多斯":
+                    website = 'https://ais.usvisa-info.com/en-bb/niv/users/sign_in'
 
                 # 设置Chrome的WebDriver
                 driver = webdriver.Chrome()
@@ -372,7 +386,21 @@ while True:
                             print("日期在需求范围内")
                             # ——————————发件人———收件人————授权码————标题————内容——————————
                             text_content = "【" + From_GuoJia + "|美国】" + city_chinese + "\n最早日期在需求范围内，\n当前最早日期为：" + Now_data_str + "\n请立即进行登录预约。\nIP:"+ip
-                            send_email("1951645633@qq.com", Mail_send2, "hdoywzgrgaomdafe", title, text_content)
+                            send_email("1951645633@qq.com", Mail_send1, "hdoywzgrgaomdafe", title, text_content)
+                            url = "http://54.169.239.115:8808/visa/saveApptMonitor"
+                            json_data = {
+                                "apptTime": Now_data_str,
+                                "consDist": From_GuoJia,
+                                "apptType": city_chinese,
+                                "ipAddr": ip,
+                                "monCountry": '美国',
+                                "status": '2',
+                                "sys": 'AIS',
+                                "userName": 'jiankong@163.com',
+                                "passWord": '12345'
+                            }
+                            response = requests.post(url, json=json_data)
+                            print(response)
                 # print("当前最早日期集合：")
                 # print(old_data)
                 # driver.refresh()

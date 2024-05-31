@@ -402,15 +402,15 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                             # print("跳出循环")
                             # cyclic = 0
                             print("没有日期，继续监控。")
-                            jiankong_cycle = 0
-                            cyclic = 0
-                            driver.quit()
-                            # driver.refresh()
+                            jiankong_cycle = 1  # 继续监控就令jiankong_cycle = 1，没日期就结束，就令jiankong_cycle = 0
+                            driver.refresh()
+                            # jiankong_cycle = 0   # 继续监控就令jiankong_cycle = 1，没日期就结束，就令jiankong_cycle = 0
+                            # cyclic = 0
+                            # driver.quit()
                             break
                         # 点击向右翻页
                         next_button = driver.find_element(By.CSS_SELECTOR, ".ui-datepicker-next")
                         next_button.click()
-
 
                 except Exception as e:
                     print(thread_name + "线程异常")
@@ -423,6 +423,7 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                     print(f"An error occurred: {e}")
                     print(f"An error occurred on line: {line_number}")
                     time.sleep(5)
+                    driver.quit()
 
 
         except Exception as e:
@@ -437,19 +438,36 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
             print(f"An error occurred on line: {line_number}")
             time.sleep(5)
             driver.quit()
-            break
+            # break
 
 
 
 city1 = '伦敦'
-username1 = 'elerriel@outlook.com'
-password1 = 'Visa2024$'
-data1 = '2024.5.01-2024.7.31'
+username1 = 'dechenpema777@gmail.com'
+password1 = 'Bhoelado2024!'
+data1 = '2024.6.03-2024.6.16'
 xiugai1 = '1'
-block_number1 = "EJ6315609"   # 操作第几位客人
+block_number1 = "Y0119346"   # 操作第几位客人
+
+city2 = '伦敦'
+username2 = '1611325505lililll@gmail.com'
+password2 = 'wangqingmeiguo123'
+data2 = '2024.4.03-2024.5.20'
+xiugai2 = '0'
+block_number2 = "EJ2952349"   # 操作第几位客人
+
+city3 = '伦敦'
+username3 = 'zhouxin1008@yeah.net'
+password3 = 'Zx001103@zx'
+data3 = '2024.6.10-2024.7.31'
+xiugai3 = '0'
+block_number3 = "EJ4620133"   # 操作第几位客人
+
 threads = []
 thread1 = threading.Thread(target=booking, args=(city1, username1, password1, data1, xiugai1, block_number1))
 thread1.start()
-# 启动线程
-# for thread in threads:
-#     thread.start()
+thread2 = threading.Thread(target=booking, args=(city2, username2, password2, data2, xiugai2, block_number2))
+thread2.start()
+thread3 = threading.Thread(target=booking, args=(city3, username3, password3, data3, xiugai3, block_number3))
+thread3.start()
+

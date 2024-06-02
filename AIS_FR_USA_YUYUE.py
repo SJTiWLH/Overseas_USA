@@ -334,8 +334,6 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
         website = "https://ais.usvisa-info.com/en-ae/niv/users/sign_in"
     elif lingqu =="Bridgetown":
         website = "https://ais.usvisa-info.com/en-bb/niv/users/sign_in"
-    elif lingqu =="Paris":
-        website = "https://ais.usvisa-info.com/en-fr/niv/users/sign_in"
 
 
     print(lingqu+"-"+username+"-"+password+"-"+date_range)
@@ -660,7 +658,7 @@ Mail_send2 = [Tong,XiaoMi,XiaoXin,Shen]
 
 #---------------------------------------------------------------------------------------------
 # 设置单刷国家
-From_GuoJia = "英国"
+From_GuoJia = "法国"
 ip = "39.98.220.155"
 #---------------------------------------------------------------------------------------------
 # 将Excel文件路径替换成你的文件路径

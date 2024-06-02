@@ -147,6 +147,8 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
         website = "https://ais.usvisa-info.com/en-cl/niv/users/sign_in"
     elif lingqu =="Dubai" or lingqu =="Abu Dhabi":
         website = "https://ais.usvisa-info.com/en-ae/niv/users/sign_in"
+    elif lingqu == "Paris":
+        website = "https://ais.usvisa-info.com/en-fr/niv/users/sign_in"
 
     print(lingqu+"-"+username+"-"+password+"-"+date_range)
     print(website)
@@ -434,10 +436,10 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
 #---------------------------------------------------------------------------------------------
 
 
-city1 = '伦敦'
-username1 = 'elerriel@outlook.com'
-password1 = 'Visa2024$'
-data1 = '2024.5.01-2024.7.31'
+city1 = '巴黎'
+username1 = '18971604553@163.com'
+password1 = 'Zhang2024'
+data1 = '2024.5.29-2025.5.31'
 xiugai1 = '1'
 block_number1 = 1   # 操作第几位客人
 
@@ -450,11 +452,9 @@ block_number2 = 1   # 操作第几位客人
 threads = []
 # 创建第一个线程
 thread1 = threading.Thread(target=booking, args=(city1, username1, password1, data1, xiugai1, block_number1))
-# 创建第二个线程
-thread2 = threading.Thread(target=booking, args=(city2, username2, password2, data2, xiugai2, block_number2))
 
 # 初始化线程列表
-threads = [thread1, thread2]
+threads = [thread1]
 
 # 启动线程
 for thread in threads:

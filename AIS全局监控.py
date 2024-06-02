@@ -39,7 +39,8 @@ city_translations = {
     'Dubai':'迪拜',
     'La Paz':'阿巴斯',
     'Paris':'巴黎',
-    'Bridgetown':'布里奇顿'
+    'Bridgetown':'布里奇顿',
+    'Dublin':'都柏林'
 
 }
 month_translations = {
@@ -64,7 +65,7 @@ old_data = {
     'Halifax': 'No Appointments Available',
     'Montreal': 'No Appointments Available',
     'Quebec City': 'No Appointments Available',
-    'London': 'No Appointments Available',
+    'London': '2024.10.10',
     'Belfast': 'No Appointments Available',
     'Buenos Aires': 'No Appointments Available',
     'Santiago':'No Appointments Available',
@@ -77,7 +78,8 @@ old_data = {
     'Dubai':'No Appointments Available',
     'La Paz':'No Appointments Available',
     'Paris':'No Appointments Available',
-    'Bridgetown':'No Appointments Available'
+    'Bridgetown':'No Appointments Available',
+    'Dublin':'No Appointments Available'
 }
 city_need_data = {
     'Ottawa': '2023.11.24-2024.04.30',
@@ -105,11 +107,11 @@ city_need_data = {
 # 添加新的城市与领区说明：
 # 1，old_data中添加判断日期发生变化的初始化信息。
 # 2,city_translations中添加将城市名翻译成中文的字典信息。
-# 3，pattern_city中天花正则表达匹配城市。
+# 3，pattern_city中添加正则表达匹配城市。
 # 4，添加登陆的网址 website
 
 # 正则表达式匹配文段中的城市
-pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown"
+pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown|Dublin"
 # 正则表达式匹配文段中的月份
 pattern_months = r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\b"
 # 正则表达式匹配四位数字
@@ -195,9 +197,9 @@ XiaoXin = "928781367@qq.com"
 XiaoMi = "1951645633@qq.com"
 XiaoMai = "540727185@qq.com"
 Fanfan = "2194025327@qq.com"
-Mail_send1 = [Tong,XiaoMi,Shen,XiaoXin] # Mail_send1发送范围内的日期。
+Mail_send1 = [Tong,XiaoMi,Shen] # Mail_send1发送范围内的日期。
 Mail_send2 = [Tong,XiaoMi,Shen] # Mail_send2发送发生变化的日期。
-ip = '39.98.88.235'
+ip = '39.98.85.69'
 task = "境外刷美签"
 nameid = 0
 
@@ -224,32 +226,35 @@ while True:
                     cishu = 0
                 print(cishu)
                 From_GuoJia = country_values[cishu]
-                if From_GuoJia == "英国":
+                if "英国" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-gb/niv/users/sign_in"
 
-                elif From_GuoJia == "加拿大":
+                elif "加拿大" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
 
-                elif From_GuoJia == "阿根廷":
+                elif  "阿根廷" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-ar/niv/users/sign_in"
 
-                elif From_GuoJia == "智利":
+                elif  "智利" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-cl/niv/users/sign_in"
 
-                elif From_GuoJia == "巴西":
+                elif "巴西" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-br/niv/users/sign_in"
 
-                elif From_GuoJia == "阿联酋":
+                elif "阿联酋" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-ae/niv/users/sign_in"
 
-                elif From_GuoJia == "玻利维亚":
+                elif  "玻利维亚" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-bo/niv/users/sign_in"
 
-                elif From_GuoJia == "法国":
+                elif "法国" in From_GuoJia:
                     website = "https://ais.usvisa-info.com/en-fr/niv/users/sign_in"
 
-                elif From_GuoJia == "巴巴多斯":
+                elif "巴巴多斯" in From_GuoJia:
                     website = 'https://ais.usvisa-info.com/en-bb/niv/users/sign_in'
+
+                elif "爱尔兰" in From_GuoJia :
+                    website = 'https://ais.usvisa-info.com/en-ie/niv/users/sign_in'
 
                 # 设置Chrome的WebDriver
                 driver = webdriver.Chrome()
@@ -387,7 +392,7 @@ while True:
                             # ——————————发件人———收件人————授权码————标题————内容——————————
                             text_content = "【" + From_GuoJia + "|美国】" + city_chinese + "\n最早日期在需求范围内，\n当前最早日期为：" + Now_data_str + "\n请立即进行登录预约。\nIP:"+ip
                             send_email("1951645633@qq.com", Mail_send1, "hdoywzgrgaomdafe", title, text_content)
-                            url = "http://54.169.239.115:8808/visa/saveApptMonitor"
+                            url = "http://api.visa5i.com/visa/saveApptMonitor"
                             json_data = {
                                 "apptTime": Now_data_str,
                                 "consDist": From_GuoJia,
@@ -412,7 +417,7 @@ while True:
                 # 要发送的数据
                 data = {"ipAddr": ip, "task": task}
                 # 发送 POST 请求
-                response = requests.post("http://54.169.239.115:8808/wuai/system/sys/saveServiceLog", json=data,timeout=60)
+                response = requests.post("http://api.visa5i.com/wuai/system/sys/saveServiceLog", json=data,timeout=60)
                 print(response)
                 time.sleep(2)
 

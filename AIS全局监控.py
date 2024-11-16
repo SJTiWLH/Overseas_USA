@@ -14,8 +14,6 @@ import time
 import subprocess
 import requests
 import pandas as pd
-import lackey
-import pywinauto
 import click_quickq
 
 city_translations = {
@@ -158,9 +156,9 @@ def send_email(sender, receiver, password,title,text_content):
     except Exception as e:
         # 打印任何错误消息
         print("An error occurred:", e)
-    finally:
-        if server is not None:
-            server.quit()
+    # finally:
+    #     if server is not None:
+    #         server.quit()
 
 #封装时间段转换为字符串
 def generate_date_range_string(input_dates):
@@ -199,7 +197,7 @@ XiaoMai = "540727185@qq.com"
 Fanfan = "2194025327@qq.com"
 Mail_send1 = [Tong,XiaoMi,Shen] # Mail_send1发送范围内的日期。
 Mail_send2 = [Tong,XiaoMi,Shen] # Mail_send2发送发生变化的日期。
-ip = '39.98.85.69'
+ip = '120.79.85.0'
 task = "境外刷美签"
 nameid = 0
 
@@ -345,6 +343,8 @@ while True:
                         #获取日期存入now_data
                         #获取年月日
                         #获取年
+                        save_screenshot_name = f"2正常_{From_GuoJia}_美国.png"
+                        driver.save_screenshot(save_screenshot_name)
                         matches_year = re.findall(pattern_four_digits, tr_element.text)
                         year = matches_year[0]
                         print(year)
@@ -366,8 +366,6 @@ while True:
                         Now_data_str = Now_data.strftime("%Y-%m-%d")
                     if Now_data_str == old_data[city_english]:
                         print("日期未发生变化")
-
-
                     elif Now_data_str != old_data[city_english]:
                         print("日期发生变化！")
 
@@ -389,10 +387,12 @@ while True:
                         is_in_need = Now_data_str in date_string
                         if is_in_need == True :
                             print("日期在需求范围内")
+                            save_screenshot_name = f"1放号_{From_GuoJia}_美国.png"
+                            driver.save_screenshot(save_screenshot_name)
                             # ——————————发件人———收件人————授权码————标题————内容——————————
                             text_content = "【" + From_GuoJia + "|美国】" + city_chinese + "\n最早日期在需求范围内，\n当前最早日期为：" + Now_data_str + "\n请立即进行登录预约。\nIP:"+ip
                             send_email("1951645633@qq.com", Mail_send1, "hdoywzgrgaomdafe", title, text_content)
-                            url = "http://api.visa5i.com/visa/saveApptMonitor"
+                            url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
                             json_data = {
                                 "apptTime": Now_data_str,
                                 "consDist": From_GuoJia,
@@ -417,7 +417,7 @@ while True:
                 # 要发送的数据
                 data = {"ipAddr": ip, "task": task}
                 # 发送 POST 请求
-                response = requests.post("http://api.visa5i.com/wuai/system/sys/saveServiceLog", json=data,timeout=60)
+                response = requests.post("http://api.visa5i.com/wuai/system/log/save", json=data,timeout=60)
                 print(response)
                 time.sleep(2)
 

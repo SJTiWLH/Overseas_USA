@@ -38,7 +38,17 @@ city_translations = {
     'La Paz':'阿巴斯',
     'Paris':'巴黎',
     'Bridgetown':'布里奇顿',
-    'Dublin':'都柏林'
+    'Dublin':'都柏林',
+    "Ciudad Juarez": "华雷斯城",
+    "Guadalajara": "瓜达拉哈拉",
+    "Hermosillo": "埃莫西约",
+    "Matamoros": "马塔莫罗斯",
+    "Merida": "梅里达",
+    "Mexico City": "墨西哥城",
+    "Monterrey": "蒙特雷",
+    "Nogales": "诺加莱斯",
+    "Nuevo Laredo": "新拉雷多",
+    "Tijuana": "蒂华纳"
 
 }
 month_translations = {
@@ -63,7 +73,7 @@ old_data = {
     'Halifax': 'No Appointments Available',
     'Montreal': 'No Appointments Available',
     'Quebec City': 'No Appointments Available',
-    'London': '2024.10.10',
+    'London': 'No Appointments Available',
     'Belfast': 'No Appointments Available',
     'Buenos Aires': 'No Appointments Available',
     'Santiago':'No Appointments Available',
@@ -77,7 +87,17 @@ old_data = {
     'La Paz':'No Appointments Available',
     'Paris':'No Appointments Available',
     'Bridgetown':'No Appointments Available',
-    'Dublin':'No Appointments Available'
+    'Dublin':'No Appointments Available',
+    "Ciudad Juarez": "No Appointments Available",
+    "Guadalajara": "No Appointments Available",
+    "Hermosillo": "No Appointments Available",
+    "Matamoros": "No Appointments Available",
+    "Merida": "No Appointments Available",
+    "Mexico City": "No Appointments Available",
+    "Monterrey": "No Appointments Available",
+    "Nogales": "No Appointments Available",
+    "Nuevo Laredo": "No Appointments Available",
+    "Tijuana": "No Appointments Available"
 }
 city_need_data = {
     'Ottawa': '2023.11.24-2024.04.30',
@@ -109,7 +129,7 @@ city_need_data = {
 # 4，添加登陆的网址 website
 
 # 正则表达式匹配文段中的城市
-pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown|Dublin"
+pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown|Dublin|Ciudad Juarez|Guadalajara|Hermosillo|Matamoros|Merida|Mexico City|Monterrey|Nogales|Nuevo Laredo|Tijuana"
 # 正则表达式匹配文段中的月份
 pattern_months = r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\b"
 # 正则表达式匹配四位数字
@@ -197,7 +217,7 @@ XiaoMai = "540727185@qq.com"
 Fanfan = "2194025327@qq.com"
 Mail_send1 = [Tong,XiaoMi,Shen] # Mail_send1发送范围内的日期。
 Mail_send2 = [Tong,XiaoMi,Shen] # Mail_send2发送发生变化的日期。
-ip = '120.79.85.0'
+ip = '47.119.126.126'
 task = "境外刷美签"
 nameid = 0
 
@@ -205,6 +225,9 @@ nameid = 0
 file_path = r'C:\Users\Administrator\Desktop\境外美签监控.xlsx'
 df = pd.read_excel(file_path)
 city_need_data = pd.Series(df['监控范围/日期'].values, index=df['监控范围/领区']).to_dict()
+# print(city_need_data)
+# print("监控信息")
+# time.sleep(5000)
 All_Jankong_df = df[df['监控类型'] == 2]
 print(All_Jankong_df)
 username_values = All_Jankong_df['账号'].tolist()
@@ -253,6 +276,9 @@ while True:
 
                 elif "爱尔兰" in From_GuoJia :
                     website = 'https://ais.usvisa-info.com/en-ie/niv/users/sign_in'
+
+                elif "墨西哥" in From_GuoJia :
+                    website = 'https://ais.usvisa-info.com/en-mx/niv/users/sign_in'
 
                 # 设置Chrome的WebDriver
                 driver = webdriver.Chrome()
@@ -304,14 +330,6 @@ while True:
                 )
                 continue_link.click()
 
-
-
-                # time.sleep(5000)
-                # while True:
-                #     try:
-                # 某些可能引发异常的操作
-                # print("这是一个死循环！")
-                # 定位所有class为"text-right"的元素
                 tr_elements = driver.find_elements(By.XPATH, "//td[@class='text-right']/ancestor::tr")
                 # 确定是否还在当前页面
                 if tr_elements == []:
@@ -368,30 +386,46 @@ while True:
                         print("日期未发生变化")
                     elif Now_data_str != old_data[city_english]:
                         print("日期发生变化！")
-
-                        #发邮件通知，sender：发件人； receiver：收件人； password：授权码； title：标题； text_content：内容；
+                        #
+                        # #发邮件通知，sender：发件人； receiver：收件人； password：授权码； title：标题； text_content：内容；
                         title = "【" + From_GuoJia + "|美国】" + city_chinese
-                        lingqu = city_chinese
-
-                        text_content = "【" + From_GuoJia + "|美国】" + city_chinese + "\n最早日期发生变化\n当前最早日期为："+Now_data_str+"\nIP:"+ip
-
-                        # ——————————发件人———收件人————授权码————标题————内容——————————
-                        send_email("1951645633@qq.com", Mail_send2, "hdoywzgrgaomdafe", title, text_content)
-
+                        # lingqu = city_chinese
+                        # text_content = "【" + From_GuoJia + "|美国】" + city_chinese + "\n最早日期发生变化\n当前最早日期为："+Now_data_str+"\nIP:"+ip
+                        # # ——————————发件人———收件人————授权码————标题————内容——————————
+                        # send_email("1951645633@qq.com", Mail_send2, "hdoywzgrgaomdafe", title, text_content)
+                        # url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
+                        # json_data = {
+                        #     "apptTime": Now_data_str,
+                        #     "consDist": From_GuoJia,
+                        #     "apptType": city_chinese,
+                        #     "ipAddr": ip,
+                        #     "monCountry": '美国',
+                        #     "status": '2',
+                        #     "sys": 'AIS',
+                        #     "userName": 'jiankong@163.com',
+                        #     "passWord": '12345'
+                        # }
+                        # response = requests.post(url, json=json_data)
+                        # print(response)
                         old_data[city_english] = Now_data_str
 
                         #查看是否在需求范围内
+                        print(city_english)
                         input_dates = city_need_data[city_english]
+                        # print(input_dates)
                         date_string = generate_date_range_string(input_dates)
-                        print(date_string)
+                        # print(date_string)
                         is_in_need = Now_data_str in date_string
                         if is_in_need == True :
                             print("日期在需求范围内")
-                            save_screenshot_name = f"1放号_{From_GuoJia}_美国.png"
+                            save_screenshot_name = f"img/1放号_{From_GuoJia}_美国.png"
                             driver.save_screenshot(save_screenshot_name)
                             # ——————————发件人———收件人————授权码————标题————内容——————————
                             text_content = "【" + From_GuoJia + "|美国】" + city_chinese + "\n最早日期在需求范围内，\n当前最早日期为：" + Now_data_str + "\n请立即进行登录预约。\nIP:"+ip
-                            send_email("1951645633@qq.com", Mail_send1, "hdoywzgrgaomdafe", title, text_content)
+                            try:
+                                send_email("1951645633@qq.com", Mail_send1, "hdoywzgrgaomdafe", title, text_content)
+                            except:
+                                print("邮件发送异常")
                             url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
                             json_data = {
                                 "apptTime": Now_data_str,
@@ -401,11 +435,14 @@ while True:
                                 "monCountry": '美国',
                                 "status": '2',
                                 "sys": 'AIS',
-                                "userName": 'jiankong@163.com',
-                                "passWord": '12345'
                             }
                             response = requests.post(url, json=json_data)
                             print(response)
+                            print(Now_data_str)
+                            print(From_GuoJia)
+                            print(city_chinese)
+                            print(ip)
+                            print(response.text)
                 # print("当前最早日期集合：")
                 # print(old_data)
                 # driver.refresh()

@@ -439,7 +439,7 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
 city1 = '巴黎'
 username1 = '18971604553@163.com'
 password1 = 'Zhang2024'
-data1 = '2024.5.29-2025.5.31'
+data1 = '2024.6.4-2024.12.31'
 xiugai1 = '1'
 block_number1 = 1   # 操作第几位客人
 

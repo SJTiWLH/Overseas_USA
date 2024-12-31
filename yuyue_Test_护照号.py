@@ -239,7 +239,6 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                     select = Select(select_element)
                     # 根据文本选择 "London"
                     select.select_by_visible_text(lingqu)
-
                     time.sleep(5)
 
                     # 打开日历
@@ -510,7 +509,7 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                     print(thread_name + "线程异常1")
                     traceback.print_exc()
                     print("------------------------线程异常------------------------")
-                    time.sleep(5)
+                    time.sleep(50000)
                     driver.quit()
 
         except Exception as e:

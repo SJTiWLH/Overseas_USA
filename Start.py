@@ -1,15 +1,36 @@
 import requests
 
-url = "http://54.169.239.115:8808/visa/saveApptMonitor"
+Now_data_str = "2024-08-13"
+From_GuoJia = "玻利维亚"
+city_chinese = "阿巴斯"
+ip = "123123123"
+
+url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
 json_data = {
-    "apptTime": "2024-09-09",
-    "consDist": '测试英国',
-    "apptType": '',
-    "ipAddr": "39.98.88.235",
-    "monCountry": '美签',
+    "apptTime": Now_data_str,
+    "consDist": From_GuoJia,
+    "apptType": city_chinese,
+    "ipAddr": ip,
+    "monCountry": '美国',
     "status": '2',
     "sys": 'AIS',
-    "userName": 'Test@163.com',
+    "userName": 'jiankong@163.com',
     "passWord": '12345'
 }
 response = requests.post(url, json=json_data)
+print(response)
+
+#
+# url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
+# json_data = {
+#     "apptTime": this_date_str,
+#     "consDist": '英国',
+#     "apptType": 'Free',
+#     "ipAddr": ip,
+#     "monCountry": 'BRP卡',
+#     "status": '1',
+#     "sys": 'Other',
+#     "userName": username,
+#     "passWord": password
+# }
+# response = requests.post(url, json=json_data)

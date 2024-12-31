@@ -336,7 +336,8 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
         website = "https://ais.usvisa-info.com/en-bb/niv/users/sign_in"
     elif lingqu =="Paris":
         website = "https://ais.usvisa-info.com/en-fr/niv/users/sign_in"
-
+    elif lingqu == "Sao Paulo" or lingqu == "Brasilia" or lingqu == "Rio de Janeiro" or lingqu == "Recife" or lingqu == "Porto Alegre":
+        website = "https://ais.usvisa-info.com/en-br/niv/users/sign_in"
 
     print(lingqu+"-"+username+"-"+password+"-"+date_range)
     print(website)
@@ -392,20 +393,6 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                     # 如果在当前app模块中没有找到元素，打印消息并继续下一个循环迭代
                     print("在当前模块中未找到指定的护照号。")
                     continue  # 继续检查下一个app模块
-
-            # 根据第几位选客人
-            # blocks = WebDriverWait(driver, 10).until(
-            #     EC.presence_of_all_elements_located((By.CLASS_NAME, "application"))
-            # )
-            # # 检查板块号是否有效
-            # if block_number < 1 or block_number > len(blocks):
-            #     print('操作的客人超过数组数量！！！！')
-            # # 定位指定板块
-            # block = blocks[block_number - 1]
-            # # 在选定的板块内查找按钮并点击
-            # button = block.find_element(By.CSS_SELECTOR, '.button.primary.small')
-            # button.click()
-            # print("点击continiu成功，接下来进入预约。")
 
             # 点击查看日期
             print(xiugai)
@@ -529,9 +516,24 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                                 # 判断是否在日期内
                                 if green_date in string_data:
                                     print(green_date + "在需求范围内")
-                                    title = "【" + Chinese_lingqu + "|美签】" + green_date
-                                    text_content = green_date + "在需求范围内,尝试点击预约.........." + "\nIP:" + ip
-                                    send_email("1316151698@qq.com", Mail_send2, "xepktuqsdrtnjeaa", title, text_content)
+                                    # title = "【" + Chinese_lingqu + "|美签】" + green_date
+                                    # text_content = green_date + "在需求范围内,尝试点击预约.........." + "\nIP:" + ip
+                                    # send_email("1316151698@qq.com", Mail_send2, "xepktuqsdrtnjeaa", title, text_content)
+                                    url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
+                                    data = {
+                                        "apptTime": green_date,
+                                        "consDist": Chinese_lingqu,
+                                        "ipAddr": ip,
+                                        "monCountry": "美国",
+                                        "status": 2,
+                                        "sys": "AIS",
+                                        "remark": ""
+                                    }
+                                    response = requests.post(url, json=data, timeout=60000)
+                                    if response.status_code == 200:
+                                        print("微信发送信息成功")
+                                    else:
+                                        print(f"微信发送信息失败，状态码: {response.status_code}")
                                     try:
                                         print(thread_name + "点击日期！")
                                         date.click()
@@ -570,6 +572,65 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                                             driver.execute_script(
                                                 'document.getElementsByName("appointments[consulate_appointment][time]")[0].selectedIndex = 1;')
                                             print("选择成功！")
+                                        # 选择录指纹日期
+                                        if lingqu == "Sao Paulo1":
+                                            try:
+                                                print("选择录指纹时间。")
+                                                # driver.execute_script(" document.getElementById('appointments_asc_appointment_facility_id').click()")
+                                                # driver.execute_script(" document.getElementById('appointments_asc_appointment_facility_id').value = '60'")
+                                                WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "appointments_asc_appointment_facility_id"))).click()
+                                                driver.find_element(By.XPATH,"//option[text()='Sao Paulo ASC Unidade Vila Mariana']").click()
+                                                time.sleep(2)
+                                                input_element = WebDriverWait(driver, 10).until(
+                                                    EC.element_to_be_clickable(
+                                                        (By.CSS_SELECTOR, ".yatri_date input required stringish"))
+                                                )
+                                                input_element.click()  # 点击打开日历
+                                                for i in range(0,1):
+                                                    # 开始查看日历
+                                                    right_calendar = driver.find_element(By.CSS_SELECTOR,
+                                                                                         ".ui-datepicker-group-last .ui-datepicker-title")
+                                                    right_month, right_year = right_calendar.text.split()
+                                                    right_month = datetime.datetime.strptime(right_month, "%B").month
+                                                    right_year = int(right_year)
+                                                    # 获取两个日历的月份和年份
+                                                    calendars = driver.find_elements(By.CSS_SELECTOR, ".ui-datepicker-group")
+                                                    for calendar in calendars:
+                                                        header = calendar.find_element(By.CSS_SELECTOR,
+                                                                                       ".ui-datepicker-header .ui-datepicker-title")
+                                                        month_year = header.text.split()
+                                                        month = datetime.datetime.strptime(month_year[0], "%B").month
+                                                        year = int(month_year[1])
+                                                        print(f"录指纹{thread_name}日历月份: {month}, 日历年份: {year}")
+                                                        # 获取可点击的日期
+                                                        clickable_dates = calendar.find_elements(By.CSS_SELECTOR,
+                                                                                                 "td:not(.ui-datepicker-unselectable) a")
+                                                        for date in clickable_dates:
+                                                            print(f"{thread_name}可点击的录指纹日期: {date.text}")
+                                                            year = int(year)
+                                                            month = int(month)
+                                                            day = int(date.text)
+                                                            green_date = "{:04d}-{:02d}-{:02d}".format(year, month, day)
+                                                            print(green_date)
+                                                            # 判断是否在日期内
+                                                            Lstring_data = "2024-12-10,2024-12-11,2024-12-12,2024-12-13,2024-12-14,2025-01-10,2025-01-11,2025-01-12,2025-01-13,2025-01-14,2025-01-15,2025-01-16,2025-01-17,2025-01-18,2025-01-19,2025-01-20,2025-01-21,2025-01-22,2025-01-23,2025-01-24,2025-01-25"
+                                                            if green_date in Lstring_data:
+                                                                print(green_date + "在需求范围内")
+                                                                print(thread_name + "点击日期！")
+                                                                date.click()
+                                                                print(thread_name + "点击成功！")
+                                                                # 选择时间
+                                                                print("选择时间！")
+                                                            time.sleep(5000)
+                                                    # 查看是否超过预约日期还么有录指纹日期
+                                                    # 翻页
+                                                    next_button = driver.find_element(By.CSS_SELECTOR,".ui-datepicker-next")
+                                                    next_button.click()
+                                            except:
+                                                print("录指纹日期选择异常。")
+                                                time.sleep(5000)
+                                        time.sleep(5000)
+
                                         # 点击提交
                                         # 定位到按钮元素
                                         submit_button = driver.find_element(By.ID, "appointments_submit")
@@ -581,10 +642,29 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                                         if yuyue_state == 1:
                                             print(thread_name + "预约成功。")
                                             print("------------------------进程预约成功------------------------")
-                                            title = "【" + Chinese_lingqu + "|美签】" + green_date
-                                            text_content = thread_name + green_date + "\n预约成功！请立即登陆服务器确认。\nIP:" + ip
-                                            send_email("1316151698@qq.com", Mail_send2, "xepktuqsdrtnjeaa", title,
-                                                       text_content)
+                                            url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
+                                            data = {
+                                                "apptTime": green_date,
+                                                "consDist": Chinese_lingqu,
+                                                "ipAddr": ip,
+                                                "monCountry": "美国",
+                                                "status": 2,
+                                                "sys": "AIS",
+                                                "remark": ""
+                                            }
+                                            response = requests.post(url, json=data, timeout=60000)
+                                            if response.status_code == 200:
+                                                print("微信发送信息成功")
+                                            else:
+                                                print(f"微信发送信息失败，状态码: {response.status_code}")
+                                            try:
+                                                title = "【" + Chinese_lingqu + "|美签】" + green_date
+                                                text_content = thread_name + green_date + "\n预约成功！请立即登陆服务器确认。\nIP:" + ip
+                                                send_email("1316151698@qq.com", Mail_send2, "xepktuqsdrtnjeaa", title,
+                                                           text_content)
+                                            except:
+                                                print("邮件发送异常，已跳过。")
+
                                             time.sleep(50000)
                                             print("跳出循环")
                                             cyclic = 0
@@ -660,8 +740,8 @@ Mail_send2 = [Tong,XiaoMi,XiaoXin,Shen]
 
 #---------------------------------------------------------------------------------------------
 # 设置单刷国家
-From_GuoJia = "英国"
-ip = "39.98.220.155"
+From_GuoJia = "巴西"
+ip = "112.74.54.111"
 #---------------------------------------------------------------------------------------------
 # 将Excel文件路径替换成你的文件路径
 file_path = r'C:\Users\Administrator\Desktop\境外美签监控.xlsx'
@@ -738,7 +818,7 @@ while True:
                 sign_in_button.click()
 
                 # 显式等待，contniue
-                continue_button = WebDriverWait(driver, 10).until(
+                continue_button = WebDriverWait(driver, 60).until(
                     EC.visibility_of_element_located((By.CLASS_NAME, "button.primary.small"))
                 )
                 continue_button.click()
@@ -876,36 +956,14 @@ while True:
                 # 要发送的数据
                 data = {"ipAddr": ip, "task": From_GuoJia+"刷美签"}
                 # 发送 POST 请求
-                response = requests.post("http://api.visa5i.com/wuai/system/sys/saveServiceLog", json=data,timeout=60)
+                response = requests.post("http://api.visa5i.com/wuai/system/log/save", json=data,timeout=60)
                 print(response)
                 time.sleep(2)
-                    # except Exception as e:
-                    #     print("发生错误：", e)
-                    #     exc_type, exc_value, exc_traceback = sys.exc_info()
-                    #     # 提取异常信息
-                    #     traceback_details = traceback.extract_tb(exc_traceback)
-                    #     # 获取错误发生的行号
-                    #     line_number = traceback_details[-1].lineno
-                    #     print(f"An error occurred on line: {line_number}")
-                    #     time.sleep(5)
-                    #     # 关闭浏览器
-                    #     driver.quit()
-                    #     break
+
 
     except Exception as e:
         print("发生了一个错误:", e)
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        # 提取异常信息
-        traceback_details = traceback.extract_tb(exc_traceback)
-        # 获取错误发生的行号
-        line_number = traceback_details[-1].lineno
-        print(f"An error occurred on line: {line_number}")
-        # try:
-        #     click_quickq.quickq()
-        #     print("切换VPN成功")
-        # except:
-        #     print("切换VPN失败")
-        # 关闭浏览器
+        traceback.print_exc()
         driver.quit()
 
 

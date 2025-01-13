@@ -1,6 +1,7 @@
 import time
 
 from selenium.webdriver.common.by import By
+
 from src.utils.logger import setup_logger
 logger = setup_logger(__name__)
 class Login:
@@ -19,4 +20,8 @@ class Login:
         self.browser.driver.find_element(By.CSS_SELECTOR, "div.icheckbox.icheck-item").click()
         self.browser.driver.find_element(By.NAME, "commit").click()
         self.browser.click_by_Class("button.primary.small")
-
+    def not_pay_go_in(self):
+        # 点击"Pay Visa Fee"按钮
+        time.sleep(2)
+        self.browser.driver.find_element(By.LINK_TEXT, "Pay Visa Fee").click()
+        self.browser.click_by_Class("small-only-expanded")

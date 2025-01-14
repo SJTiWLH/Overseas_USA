@@ -76,6 +76,7 @@ class WatchData:
             logger.info(f"{city_chinese}——监控到最早日期:{Now_data_str}")
             if Now_data_str in Jiankong_data_Str:
                 print("再需求内，查看是否有客人需要。")
+                self.tool.send_Jiankong_Wechat(city_chinese,"加拿大",Now_data_str)
                 self.find_people(city_chinese,Now_data_str)
                 # 读取客人列表
 

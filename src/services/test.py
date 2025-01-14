@@ -38,6 +38,15 @@ import pandas as pd
 # if Now_data_str in need_data:
 #     print(need_data)
 
-jiankong_excelPath = '../境外美签监控.xlsx'
-absolute_path = os.path.abspath(jiankong_excelPath)
-print(absolute_path)
+# jiankong_excelPath = '../境外美签监控.xlsx'
+# absolute_path = os.path.abspath(jiankong_excelPath)
+# print(absolute_path)
+green_people_arr = "123456789"
+green_people = [{'序号': 1, '领区': '巴黎'},{'序号': 2, '领区': '巴黎'}]
+# green_people_arr.append(green_people)
+print(green_people_arr)
+print(len(green_people_arr))
+# if green_people_arr == []:
+#     print("没东西")
+# elif green_people_arr != []:
+#     print("有东西")

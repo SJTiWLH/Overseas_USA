@@ -11,8 +11,8 @@ logger = setup_logger(__name__)
 
 
 class WatchData:
-    def __init__(self,browser):
-        self.pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown"
+    def __init__(self,browser,from_contry):
+        self.pattern_city = r"London|Belfast|Ottawa|Toronto|Vancouver|Calgary|Halifax|Montreal|Quebec City|Buenos Aires|Santiago|Brasilia|Rio de Janeiro|Sao Paulo|Recife|Porto Alegre|Abu Dhabi|Dubai|La Paz|Paris|Bridgetown|Dublin|Ciudad Juarez|Guadalajara|Hermosillo|Matamoros|Merida|Mexico City|Monterrey|Nogales|Nuevo Laredo|Tijuana"
         self.pattern_months = r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\b"
         self.city_translations = {
             'Ottawa': '渥太华',
@@ -35,7 +35,18 @@ class WatchData:
             'Dubai': '迪拜',
             'La Paz': '阿巴斯',
             'Paris': '巴黎',
-            'Bridgetown': '巴巴多斯'
+            'Bridgetown': '布里奇顿',
+            'Dublin': '都柏林',
+            "Ciudad Juarez": "华雷斯城",
+            "Guadalajara": "瓜达拉哈拉",
+            "Hermosillo": "埃莫西约",
+            "Matamoros": "马塔莫罗斯",
+            "Merida": "梅里达",
+            "Mexico City": "墨西哥城",
+            "Monterrey": "蒙特雷",
+            "Nogales": "诺加莱斯",
+            "Nuevo Laredo": "新拉雷多",
+            "Tijuana": "蒂华纳"
         }
         self.month_translations = {
             'January': '1',
@@ -55,6 +66,7 @@ class WatchData:
         self.pattern_two_digits = r"\b\d{2}\b"
         self.pattern_one_digits = r"\b\d{1}\b"
         self.browser = browser
+        self.from_contry = from_contry
         self.tool = Tool()
         self.jiankong_excelPath = AppConfig.jiankong_excelPath
         self.getExcel = getExcel()
@@ -67,22 +79,27 @@ class WatchData:
         if tr_elements == []:
             print("不在日期页面，重新启动浏览器。")
             self.browser.driver.quit()
-
+        green_people_arr = [] # 遍历每个城市的日期，拿到日期去客人表格对比，符合条件的放入该数组。遍历完所有城市，拿到所有满足条件的客人
         for tr_element in tr_elements:
             print("------------------------------------------------------------------------------------------")
             logger.info(f"城市与日期：{tr_element.text}")
             # 匹配城市英文名 获得领区中文名称，和显示日期，和当前城市需要的日期
             city_chinese,Now_data_str,Jiankong_data_Str= self.not_pay_processData(tr_element.text)
-            logger.info(f"{city_chinese}——监控到最早日期:{Now_data_str}")
+            logger.info(f"{self.from_contry}-{city_chinese}—监控到最早日期:{Now_data_str}")
             if Now_data_str in Jiankong_data_Str:
-                print("再需求内，查看是否有客人需要。")
-                self.tool.send_Jiankong_Wechat(city_chinese,"加拿大",Now_data_str)
-                self.find_people(city_chinese,Now_data_str)
-                # 读取客人列表
+                self.tool.send_Jiankong_Wechat(city_chinese,self.from_contry,Now_data_str)
+                logger.info("最早日期在监控范围内，发送微信通知")
+                # 拿到最早日期，去查找是否有符合条件的客人
+                green_people = self.find_people(city_chinese,Now_data_str)
+                green_people_arr.extend(green_people)
+        print("------------------------------------------------------------------------------------------")
+        return green_people_arr
+
 
 
 
     def find_people(self,city_chinese,Now_data_str):
+        # 拿监控的城市和监控到的日期，查看时候是需要预约的人，在范围内就返回该客人的全部信息，和总共有多少客人
         result = []
         for persion in self.allPeople:
             if persion["领区"] == city_chinese and persion["是否预约"] == 1:
@@ -90,7 +107,7 @@ class WatchData:
                 need_data = self.tool.generate_date_range_string(need_Time)
                 if Now_data_str in need_data:
                     result.append(persion)
-        return result,len(result)
+        return result
     def not_pay_processData(self, data):
         # 处理获取到的数据（页面右侧领区和最早日期 例如： London January 01 ）
         # 返回 城市中文名、显示的日期（如果没卡槽返回noslot提示）、在表中获取到的监控日期Str
@@ -103,7 +120,7 @@ class WatchData:
         Jiankong_data_Str = self.tool.generate_date_range_string(Jiankong_data)
         # 获取城市中文名
         city_chinese = self.city_translations[city_english]
-        logger.info(f"{city_chinese}——监控日期：{Jiankong_data}，已经转换为Str类型")
+        logger.info(f"{city_chinese}—监控范围：{Jiankong_data}")
 
         # 检查是否有卡槽
         contains_No = "No Appointments Available" in data

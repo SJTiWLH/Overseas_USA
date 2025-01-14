@@ -28,11 +28,11 @@ class Tool:
         # 将所有日期列表转换为字符串
         return ','.join(all_dates)
 
-    def send_Jiankong_Wechat(self,lingqu,guojia,greentime):
+    def send_Jiankong_Wechat(self,lingqu,from_contry,greentime):
         url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
         json_data = {
             "apptTime": greentime,
-            "consDist": guojia,
+            "consDist": from_contry,
             "apptType": lingqu,
             "ipAddr": self.ip,
             "monCountry": '美国',

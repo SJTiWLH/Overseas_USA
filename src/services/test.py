@@ -41,12 +41,22 @@ import pandas as pd
 # jiankong_excelPath = '../境外美签监控.xlsx'
 # absolute_path = os.path.abspath(jiankong_excelPath)
 # print(absolute_path)
-green_people_arr = "123456789"
-green_people = [{'序号': 1, '领区': '巴黎'},{'序号': 2, '领区': '巴黎'}]
-# green_people_arr.append(green_people)
-print(green_people_arr)
-print(len(green_people_arr))
+# green_people_arr = "123456789"
+# green_people = [{'序号': 1, '领区': '巴黎'},{'序号': 2, '领区': '巴黎'}]
+# # green_people_arr.append(green_people)
+# print(green_people_arr)
+# print(len(green_people_arr))
 # if green_people_arr == []:
 #     print("没东西")
 # elif green_people_arr != []:
 #     print("有东西")
+class test:
+    def getURL(self,guojia=None,lingqu=None):
+        if guojia=="英国" or lingqu == "伦敦":
+            url = "123"
+            return url
+        else:
+            return "没有找到对应国家的网站"
+test=test()
+a = test.getURL(None,"伦敦")
+print(a)

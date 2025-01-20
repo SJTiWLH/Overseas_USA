@@ -18,13 +18,13 @@ class AppConfig:
     LOG_LEVEL = "INFO"
     LOG_FILE = "consul_booking.log"
 
-    def getUrl(self,From_GuoJia,lingqu=None):
+    def getUrl(self,From_GuoJia):
         # 目标URL
         Canada = ('渥太华', '多伦多', '温哥华', '卡尔加里', '哈利法克斯', '蒙特利尔', '魁北克城')
-        if "英国" in From_GuoJia or "伦敦" in lingqu or "贝尔法斯特" in lingqu:
+        if "英国" in From_GuoJia :
             TARGET_URL = "https://ais.usvisa-info.com/en-gb/niv/users/sign_in"
 
-        elif "加拿大" in From_GuoJia or(lq in lingqu for lq in Canada)  :
+        elif "加拿大" in From_GuoJia :
             TARGET_URL = "https://ais.usvisa-info.com/en-ca/niv/users/sign_in"
 
         elif "阿根廷" in From_GuoJia  :

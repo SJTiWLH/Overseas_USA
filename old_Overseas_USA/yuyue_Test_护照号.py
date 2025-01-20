@@ -224,7 +224,6 @@ def booking(lingqu,username,password,date_range,xiugai,block_number):
                 except:
                     print("JS点击失败")
 
-
             elif xiugai == 1:
                 # 修改预约点3
                 driver.execute_script(

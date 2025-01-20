@@ -30,7 +30,7 @@ def main():
             user_login.not_pay_go_in()
             watch = WatchData(browser,from_contry)
             green_people_arr = watch.not_pay_getData()
-            book = Book(green_people_arr)
+            book = Book(green_people_arr,from_contry)
             book.Book_App()
             time.sleep(2)
             browser.close()

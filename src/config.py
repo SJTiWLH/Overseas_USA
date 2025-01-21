@@ -16,7 +16,7 @@ class AppConfig:
     # 日志配置
     LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     LOG_LEVEL = "INFO"
-    LOG_FILE = "consul_booking.log"
+    LOG_FILE = "./src/consul_booking.log"
 
     def getUrl(self,From_GuoJia):
         # 目标URL

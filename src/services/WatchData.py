@@ -163,7 +163,7 @@ class WatchData:
         print(lingqu_e)
         self.pay_selectLingqu(lingqu_e)  # 选择领区
         self.open_data_table()  # 打开日历
-        self.read_dada_table(eTime)
+        self.read_dada_table(lingqu,eTime)
     def pay_selectLingqu(self,lingqu_e):
         # 下拉框选择领区
         select_element = self.browser.driver.find_element(By.ID, "appointments_consulate_appointment_facility_id")
@@ -184,17 +184,16 @@ class WatchData:
                 error_num += 1
                 if error_num == 5:
                     break
-    def read_dada_table(self,eTime):
+    def read_dada_table(self,lingqu,eTime):
         # 翻看日历
         # 等待日历加载
         self.browser.driver.implicitly_wait(5)
         time.sleep(5)
 
         string_data = self.tool.generate_date_range_string(eTime)
-        print(string_data)
         # 将日期范围分割成开始日期和结束日期
         start_date_str, end_date_str = self.data_start_end(eTime)
-        print(start_date_str, end_date_str)
+        logger.info(f"{start_date_str},{end_date_str}")
         # 从每个日期中提取年和月
         start_year, start_month = map(int, start_date_str.split('.')[:2])
         end_year, end_month = map(int, end_date_str.split('.')[:2])
@@ -206,103 +205,109 @@ class WatchData:
             # 获取左侧日历的年份和月份
             left_calendar = self.browser.driver.find_element(By.CSS_SELECTOR,".ui-datepicker-group-first .ui-datepicker-title")
             left_month, left_year = left_calendar.text.split()
-            print(left_month, left_year)
-            left_month = datetime.datetime.strptime(left_month, "%B").month
+            logger.info(f"{left_month},{left_year}")
+            left_month = datetime.strptime(left_month, "%B").month
             left_year = int(left_year)
-
             # 检查是否到达开始日期
             if (left_year, left_month) >= start_date:
-                print("到达开始日期")
+                logger.info("到达开始日期")
                 time.sleep(2)
                 break
 
             # 点击向右翻页
             next_button = self.browser.driver.find_element(By.CSS_SELECTOR, ".ui-datepicker-next")
             next_button.click()
-        # 获取右侧日历的年份和月份
-        right_calendar = self.browser.driver.find_element(By.CSS_SELECTOR,".ui-datepicker-group-last .ui-datepicker-title")
-        right_month, right_year = right_calendar.text.split()
-        right_month = datetime.datetime.strptime(right_month, "%B").month
-        right_year = int(right_year)
-        # 获取两个日历的月份和年份
-        calendars = self.browser.driver.find_elements(By.CSS_SELECTOR, ".ui-datepicker-group")
-        for calendar in calendars:
-            header = calendar.find_element(By.CSS_SELECTOR,
-                                           ".ui-datepicker-header .ui-datepicker-title")
-            month_year = header.text.split()
-            month = datetime.datetime.strptime(month_year[0], "%B").month
-            year = int(month_year[1])
-            print(f"日历月份: {month}, 日历年份: {year}")
-            # 获取可点击的日期
-            clickable_dates = calendar.find_elements(By.CSS_SELECTOR,"td:not(.ui-datepicker-unselectable) a")
-            for date in clickable_dates:
-                print(f"可点击的日期: {date.text}")
-                year = int(year)
-                month = int(month)
-                day = int(date.text)
-                green_date = "{:04d}-{:02d}-{:02d}".format(year, month, day)
-                print(green_date)
-                # 判断是否在日期内
-                if green_date in string_data:
-                    print(green_date + "在需求范围内")
-                    # 发送微信通知
-                    try:
-                        print( "点击日期！")
-                        date.click()
-                        print("点击成功！")
-                        # 选择时间
-                        print("选择时间！")
-                        times = None
-                        times_len = 1
-                        attempts = 0
-                        while attempts < 10 and (times is None or times_len == 1):
-                            try:
-                                times = self.browser.driver.execute_script(
-                                    'return document.getElementsByName("appointments[consulate_appointment][time]")[0].innerText;')
-                                times_len = self.browser.driver.execute_script(
-                                    'return document.getElementsByName("appointments[consulate_appointment][time]")[0].length;')
-                                if times:  # 如果times非空，跳出循环
-                                    break
-                            except Exception as e:
-                                print("尝试获取元素时出错：", e)
-                            print("时间未加载完毕，循环获取中.........")
-                            time.sleep(1)  # 等待1秒后再次尝试
-                            attempts += 1
-                        if (times is None) or (times_len == 1):
-                            print("无可选时间,下拉框长度：")
-                            print(times_len)
-                            # 无可选时间段,继续监控
-                            print("继续监控！！！")
-                            break
-                        else:
-                            print("获取到的时间：", times)
-                        if times != None:
-                            self.browser.driver.execute_script(
-                                'document.getElementsByName("appointments[consulate_appointment][time]")[0].selectedIndex = 1;')
-                            print("选择成功！")
-                        # 点击提交
-                        # 定位到按钮元素
-                        submit_button = self.browser.driver.find_element(By.ID, "appointments_submit")
-                        # submit_button.click()
+        chack_data_cycle = 1
+        while chack_data_cycle == 1:
+            # 获取右侧日历的年份和月份
+            right_calendar = self.browser.driver.find_element(By.CSS_SELECTOR,".ui-datepicker-group-last .ui-datepicker-title")
+            right_month, right_year = right_calendar.text.split()
+            right_month = datetime.strptime(right_month, "%B").month
+            right_year = int(right_year)
+            # 获取两个日历的月份和年份
+            calendars = self.browser.driver.find_elements(By.CSS_SELECTOR, ".ui-datepicker-group")
+            for calendar in calendars:
+                header = calendar.find_element(By.CSS_SELECTOR,
+                                               ".ui-datepicker-header .ui-datepicker-title")
+                month_year = header.text.split()
+                month = datetime.strptime(month_year[0], "%B").month
+                year = int(month_year[1])
+                logger.info(f"日历月份: {month}, 日历年份: {year}")
+                # 获取可点击的日期
+                clickable_dates = calendar.find_elements(By.CSS_SELECTOR,"td:not(.ui-datepicker-unselectable) a")
+                for date in clickable_dates:
+                    logger.info(f"可点击的日期: {date.text}")
+                    year = int(year)
+                    month = int(month)
+                    day = int(date.text)
+                    green_date = "{:04d}-{:02d}-{:02d}".format(year, month, day)
+                    logger.info(green_date)
+                    # 判断是否在日期内
+                    if green_date in string_data:
+                        logger.info(f"{green_date},在需求范围内")
+                        # 发送微信通知
+                        self.tool.send_Jiankong_Wechat(lingqu,self.from_contry,green_date)
+                        try:
+                            logger.info( "点击日期！")
+                            date.click()
+                            logger.info("点击成功！")
+                            # 选择时间
+                            logger.info("选择时间！")
+                            times = None
+                            times_len = 1
+                            attempts = 0
+                            while attempts < 10 and (times is None or times_len == 1):
+                                try:
+                                    times = self.browser.driver.execute_script(
+                                        'return document.getElementsByName("appointments[consulate_appointment][time]")[0].innerText;')
+                                    times_len = self.browser.driver.execute_script(
+                                        'return document.getElementsByName("appointments[consulate_appointment][time]")[0].length;')
+                                    if times.strip():  # 如果times非空，跳出循环
+                                        break
+                                except Exception as e:
+                                    print("尝试获取元素时出错：", e)
+                                print("时间未加载完毕，循环获取中.........")
+                                time.sleep(1)  # 等待1秒后再次尝试
+                                attempts += 1
+                            if (times is None) or (times_len == 1):
+                                print("无可选时间,下拉框长度：")
+                                print(times_len)
+                                self.tool.send_Jiankong_Wechat(lingqu, self.from_contry, green_date,"该日期无可选时间段,继续监控")
+                                # 无可选时间段,继续监控
+                                print("继续监控！！！")
+                                break
+                            else:
+                                print("获取到的时间：", times)
+                            if times != None:
+                                self.browser.driver.execute_script('''var selectElement = document.getElementsByName("appointments[consulate_appointment][time]")[0];
+                                                                    selectElement.selectedIndex = 1;
+                                                                    var event = new Event("change");
+                                                                    selectElement.dispatchEvent(event);''')   # 选择时间之后,告知网页发生change事件来激活更改
+                                print("选择成功！")
+                            # 点击提交
+                            # 定位到按钮元素
+                            submit_button = self.browser.driver.find_element(By.ID, "appointments_submit")
+                            # submit_button.click()
 
-                        yuyue_state = 1
-                        if yuyue_state == 1:
-                            print( "预约成功。")
-                            # 发送微信信息
-                            time.sleep(50000)
-                            print("跳出循环")
-                            cyclic = 0
-                            break
+                            yuyue_state = 1
+                            if yuyue_state == 1:
+                                print( "预约成功。")
+                                # 发送微信信息
+                                time.sleep(50000)
+                                print("跳出循环")
+                                break
 
-                    except:
-                        print("点击提交异常，预约日期已空！")
+                        except:
+                            print("点击提交异常，预约日期已空！")
 
+            if (right_year, right_month) > end_date:
+                print("到达截止日期，未发现可预约日期")
+                print("没有日期，继续监控。")
+                chack_data_cycle = 0
 
-        if (right_year, right_month) > end_date:
-            print("到达截止日期，未发现可预约日期")
-
-            print("没有日期，继续监控。")
-
+            # 点击向右翻页
+            next_button = self.browser.driver.find_element(By.CSS_SELECTOR, ".ui-datepicker-next")
+            next_button.click()
 
     def data_start_end(self,date_range):
         date_ranges = date_range.split(';')  # 分割得到所有日期区间

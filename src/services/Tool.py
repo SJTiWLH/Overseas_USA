@@ -34,7 +34,7 @@ class Tool:
         # 将所有日期列表转换为字符串
         return ','.join(all_dates)
 
-    def send_Jiankong_Wechat(self,lingqu,from_contry,greentime):
+    def send_Jiankong_Wechat(self,lingqu,from_contry,greentime,remark=None):
         url = "http://api.visa5i.com/wuai/system/wechat-notification/save"
         json_data = {
             "apptTime": greentime,
@@ -44,7 +44,7 @@ class Tool:
             "monCountry": '美国',
             "status": '2',
             "sys": 'AIS',
-            "remark": ""
+            "remark": remark
         }
         response = requests.post(url, json=json_data)
         return response
@@ -63,6 +63,7 @@ class Tool:
         }
         response = requests.post(url, json=json_data)
         return response
+
 
     def quickq(self):
 

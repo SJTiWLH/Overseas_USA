@@ -21,6 +21,7 @@ class Book:
     def Book_App(self):
         if len(self.green_people_arr) == 0:
             logger.info(f"无满足条件客人，退出预约操作。继续监控")
+            time.sleep(30)
             return
         logger.info(f"开始预约操作")
         print(self.green_people_arr)
@@ -41,7 +42,7 @@ class Book:
         user_login.login()
         user_login.paid_go_in(password,xiugai)
         watch = WatchData(browser, lingqu)
-        watch.pay_getData(lingqu,eTime)
+        watch.pay_getData(lingqu,eTime,xiugai)
 
         time.sleep(2000)
 

@@ -37,7 +37,8 @@ def main():
 
         except:
             traceback.print_exc()
-            time.sleep(2000)
+            time.sleep(20)
+            browser.close()
 
 
 

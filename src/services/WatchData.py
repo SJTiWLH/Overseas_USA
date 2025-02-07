@@ -99,6 +99,7 @@ class WatchData:
                 # 拿到最早日期，去查找是否有符合条件的客人
                 green_people = self.find_people(city_chinese,Now_data_str)
                 green_people_arr.extend(green_people)
+        self.tool.send_run_JianKong()
         print("------------------------------------------------------------------------------------------")
         print("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
         return green_people_arr
@@ -155,15 +156,13 @@ class WatchData:
             Now_data = date(year, month, day)
             Now_data_str = Now_data.strftime("%Y-%m-%d")
             return city_chinese, Now_data_str, Jiankong_data_Str
-
-
-    def pay_getData(self,lingqu,eTime):
+    def pay_getData(self,lingqu,eTime,xiugai):
         # 使用付费的账号进行监控和预约
         lingqu_e = self.city_translations_c_to_e.get(lingqu)  # 获取英文名一会要进行选择
         print(lingqu_e)
         self.pay_selectLingqu(lingqu_e)  # 选择领区
         self.open_data_table()  # 打开日历
-        self.read_dada_table(lingqu,eTime)
+        self.read_dada_table(lingqu,eTime,xiugai)
     def pay_selectLingqu(self,lingqu_e):
         # 下拉框选择领区
         select_element = self.browser.driver.find_element(By.ID, "appointments_consulate_appointment_facility_id")
@@ -184,7 +183,7 @@ class WatchData:
                 error_num += 1
                 if error_num == 5:
                     break
-    def read_dada_table(self,lingqu,eTime):
+    def read_dada_table(self,lingqu,eTime,xiugai):
         # 翻看日历
         # 等待日历加载
         self.browser.driver.implicitly_wait(5)
@@ -287,12 +286,16 @@ class WatchData:
                             # 点击提交
                             # 定位到按钮元素
                             submit_button = self.browser.driver.find_element(By.ID, "appointments_submit")
-                            # submit_button.click()
+                            submit_button.click()
+                            if xiugai == 1:
+                                xiugai_button = self.browser.driver.find_element(By.CSS_SELECTOR, "a.button.alert")
+                                xiugai_button.click()
 
                             yuyue_state = 1
                             if yuyue_state == 1:
                                 print( "预约成功。")
                                 # 发送微信信息
+                                self.tool.send_Yuyue_Wechat(lingqu, self.from_contry, green_date)
                                 time.sleep(50000)
                                 print("跳出循环")
                                 break
@@ -308,7 +311,6 @@ class WatchData:
             # 点击向右翻页
             next_button = self.browser.driver.find_element(By.CSS_SELECTOR, ".ui-datepicker-next")
             next_button.click()
-
     def data_start_end(self,date_range):
         date_ranges = date_range.split(';')  # 分割得到所有日期区间
         # 初始化开始和截止日期为第一个区间的值

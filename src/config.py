@@ -6,6 +6,7 @@ class AppConfig:
 
     # ip
     ip = '127.0.0.1'
+    task = "加拿大刷美签"
 
 
     jiankong_relative_excelPath = '../境外美签监控.xlsx'

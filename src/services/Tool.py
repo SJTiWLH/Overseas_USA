@@ -11,6 +11,7 @@ from src.config import AppConfig
 class Tool:
     def __init__(self):
         self.ip = AppConfig.ip
+        self.task = AppConfig.task
     def generate_date_range_string(self,input_dates):
 
         # 分割字符串以获取各个时间段
@@ -64,7 +65,12 @@ class Tool:
         response = requests.post(url, json=json_data)
         return response
 
-
+    def send_run_JianKong(self):
+        data = {
+            "ipAddr": self.ip,
+            "task": self.task
+        }
+        response = requests.post("http://api.visa5i.com/wuai/system/log/save", json=data, timeout=60000)
     def quickq(self):
 
         number_two = 0

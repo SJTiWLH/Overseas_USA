@@ -96,6 +96,8 @@ class WatchData:
             if Now_data_str in Jiankong_data_Str:
                 self.tool.send_Jiankong_Wechat(city_chinese,self.from_contry,Now_data_str)
                 logger.info("最早日期在监控范围内，发送微信通知")
+                save_screenshot_name = f"img/1放号_{city_chinese}_美国.png"
+                self.browser.driver.save_screenshot(save_screenshot_name)
                 # 拿到最早日期，去查找是否有符合条件的客人
                 green_people = self.find_people(city_chinese,Now_data_str)
                 green_people_arr.extend(green_people)

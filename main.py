@@ -36,8 +36,8 @@ def main():
             browser.close()
 
         except:
-            traceback.print_exc()
             time.sleep(20)
+            traceback.print_exc()
             browser.close()
 
 
@@ -45,4 +45,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

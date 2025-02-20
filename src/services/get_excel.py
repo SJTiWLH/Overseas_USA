@@ -21,18 +21,6 @@ class getExcel:
         return rows
 
 
-# tool = Tool()
-# allPeople = a.get_yuyue_data_for_Excel()
-# Now_data_str = "2024-09-20"
-# result = []
-# for persion in allPeople:
-#     if persion["领区"] == "巴黎" and persion["是否预约"] == 1:
-#         need_Time = persion["预约时间"]
-#         need_data = tool.generate_date_range_string(need_Time)
-#         if Now_data_str in need_data:
-#             result.append(persion)
-# print(f"符合条件的元素个数: {len(result)}")
-# print(result)
     def username_jiankong(self):
         file_path = r'C:\Slot\UK\Overseas_USA\境外美签监控.xlsx'
         df = pd.read_excel(file_path)
@@ -45,8 +33,3 @@ class getExcel:
             row_dict = dict(row)
             rows.append(row_dict)
         return rows
-
-# a = getExcel()
-# b = a.username_jiankong()
-# print(b)
-# print(len(b))
